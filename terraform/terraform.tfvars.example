@@ -1,0 +1,5 @@
+# Copie para terraform.tfvars para uso local (NUNCA comite terraform.tfvars).
+# Nenhuma variavel deste modulo e sensivel - so nomes/configuracao.
+
+aws_region  = "us-east-1"
+environment = "development"

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oficina-billing-service-config
+  namespace: oficina
+data:
+  PORT: "3000"
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  AWS_REGION: "${aws_region}"
+  DYNAMODB_TABLE_ORCAMENTOS: "billing-orcamentos"
+  DYNAMODB_TABLE_PAGAMENTOS: "billing-pagamentos"
+  DYNAMODB_TABLE_WEBHOOK_LOGS: "billing-webhook-logs"
+  # Saga (oficina-messaging-infra) - SNS FIFO unico + fila SQS deste servico.
+  SAGA_TOPIC_ARN: "${saga_topic_arn}"
+  SAGA_QUEUE_URL: "${saga_queue_url}"
