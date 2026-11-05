@@ -5,11 +5,16 @@ orçamento/pagamento e integração com o **Mercado Pago** (PIX/Checkout +
 Webhooks). Dono exclusivo de um banco **NoSQL (DynamoDB)** — nenhum outro
 serviço acessa essas tabelas diretamente.
 
-| Repositório | Papel |
-|---|---|
-| [oficina-messaging-infra](https://github.com/marcosrenansilvafaria-afk/oficina-messaging-infra) | Broker SNS/SQS FIFO + contratos de evento do Saga |
-| [oficina-os-service](https://github.com/marcosrenansilvafaria-afk/oficina-os-service) | Microsserviço de Ordem de Serviço |
-| **oficina-billing-service** (este) | Microsserviço de orçamento/pagamento |
+| # | Repositório | Responsabilidade |
+|---|---|---|
+| 1 | [oficina-db-infrastructure](https://github.com/marcosrenansilvafaria-afk/oficina-db-infrastructure) | RDS PostgreSQL (compartilhada entre OS/Execution Service) |
+| 2 | [oficina-lambda-auth](https://github.com/marcosrenansilvafaria-afk/oficina-lambda-auth) | Autenticação por CPF + JWT (Lambda + API Gateway) |
+| 3 | [oficina-k8s-infrastructure](https://github.com/marcosrenansilvafaria-afk/oficina-k8s-infrastructure) | Cluster EKS compartilhado |
+| 4 | [oficina-app](https://github.com/marcosrenansilvafaria-afk/oficina-app) | Hub de documentação, dashboards de observabilidade, Saga E2E |
+| 5 | [oficina-messaging-infra](https://github.com/marcosrenansilvafaria-afk/oficina-messaging-infra) | Broker SNS/SQS FIFO + contratos de evento do Saga |
+| 6 | [oficina-os-service](https://github.com/marcosrenansilvafaria-afk/oficina-os-service) | Microsserviço de Ordem de Serviço |
+| 7 | **oficina-billing-service** (este) | Microsserviço de orçamento/pagamento |
+| 8 | [oficina-execution-service](https://github.com/marcosrenansilvafaria-afk/oficina-execution-service) | Microsserviço de fila de produção/execução |
 
 ## Sumário
 
@@ -113,6 +118,16 @@ docker-compose up --build
 Sobe `amazon/dynamodb-local` (porta `8000`) + cria as 3 tabelas
 automaticamente (`create-tables`) + a API em `http://localhost:3002`. Sem
 `MERCADOPAGO_ACCESS_TOKEN`, usa o gateway fake automaticamente.
+
+## Endpoints HTTP
+
+| Recurso | Base path | Principais rotas |
+|---|---|---|
+| Pagamentos | `/pagamentos` | `GET /pagamentos/:ordemServicoId` |
+| Webhooks | `/webhooks` | `POST /webhooks/mercadopago` (rota pública, valida `x-signature`) |
+| Teste (seam, ver Pendências) | `/test/mercadopago` | `POST /test/mercadopago/proximo-status` — só ativo com `ENABLE_SAGA_E2E_TEST_ENDPOINTS=true` |
+
+Lista completa, com schemas de request/response, no Swagger.
 
 ## Swagger / OpenAPI
 
