@@ -10,5 +10,6 @@ coverage
 test
 infra
 k8s
+terraform/.terraform
 .github
 *.md
