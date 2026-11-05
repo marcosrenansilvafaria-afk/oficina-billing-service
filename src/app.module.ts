@@ -3,6 +3,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TerminusModule } from '@nestjs/terminus';
 import { WebhookMercadoPagoController } from './interfaces/http/webhook-mercadopago.controller';
 import { PagamentoController } from './interfaces/http/pagamento.controller';
+import { TestMercadoPagoController } from './interfaces/http/test-mercadopago.controller';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from './infraestructure/observability/logger.module';
 import { MetricsController } from './infraestructure/observability/metrics.controller';
@@ -16,6 +17,7 @@ import { SagaModule } from './infraestructure/saga/saga.module';
   controllers: [
     WebhookMercadoPagoController,
     PagamentoController,
+    TestMercadoPagoController,
     MetricsController,
     HealthController,
   ],

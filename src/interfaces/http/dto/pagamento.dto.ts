@@ -15,4 +15,7 @@ export class PagamentoResponseDto {
     enum: ['PENDENTE', 'APROVADO', 'RECUSADO', 'REEMBOLSADO'],
   })
   status!: StatusPagamento;
+
+  @ApiProperty({ required: false })
+  mercadoPagoPaymentId?: string;
 }
