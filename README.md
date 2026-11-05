@@ -132,6 +132,20 @@ BDD (`test/bdd/pagamento.feature`, 2 cenários): pagamento aprovado
 `PagamentoAprovadoEvent` publicado) e compensação por falha de execução
 (`CompensarOSEvent origemFalha=EXECUCAO` → `Pagamento` `REEMBOLSADO`).
 
+## Simulação E2E do Saga (Sprint 5)
+
+Os testes acima validam este serviço isoladamente. A validação do Saga
+coreografado **entre os 3 microsserviços reais** (publicando/consumindo
+no SNS/SQS FIFO real, não um emulador) vive em
+[`oficina-app/test/saga-e2e/`](https://github.com/marcosrenansilvafaria-afk/oficina-app/tree/main/test/saga-e2e)
+— veja o README daquela suíte para pré-requisitos e instruções
+(`docker compose -f docker-compose.saga-e2e.yml up` + `npm run test:saga-e2e`,
+executado a partir do `oficina-app`). O endpoint
+`POST /test/mercadopago/proximo-status` usado por essa suíte (ver
+`ENABLE_SAGA_E2E_TEST_ENDPOINTS`) só existe para viabilizar a simulação de
+"pagamento recusado" sem credenciais reais do Mercado Pago — fica inerte
+(404) fora desse cenário.
+
 ## Deploy no EKS
 
 Pipeline em [`.github/workflows/ci-cd-billing-service.yml`](.github/workflows/ci-cd-billing-service.yml),
@@ -154,7 +168,9 @@ policies anexadas: `oficina-saga-billing-service-policy` (Sprint 1, Saga) +
 Ver [`.env.example`](.env.example): `DYNAMODB_ENDPOINT`/`DYNAMODB_TABLE_*`,
 `MERCADOPAGO_ACCESS_TOKEN`/`MERCADOPAGO_WEBHOOK_SECRET`,
 `SAGA_TOPIC_ARN`/`SAGA_QUEUE_URL`, `JWT_SECRET` (**idêntico** aos demais
-serviços).
+serviços), `ENABLE_SAGA_E2E_TEST_ENDPOINTS` (ausente por padrão — habilita
+`POST /test/mercadopago/proximo-status`, usado só pela simulação E2E do
+Saga descrita acima).
 
 ## Pendências conhecidas
 
