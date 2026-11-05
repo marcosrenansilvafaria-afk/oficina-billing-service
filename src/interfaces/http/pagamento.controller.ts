@@ -42,6 +42,7 @@ export class PagamentoController {
       ordemServicoId: pagamento.ordemServicoId,
       valor: pagamento.valor,
       status: pagamento.getStatus(),
+      mercadoPagoPaymentId: pagamento.getMercadoPagoPaymentId(),
     };
   }
 }

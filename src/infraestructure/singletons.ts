@@ -10,7 +10,10 @@ import { SnsPublisherService } from './saga/sns-publisher.service';
 import { IOrcamentoRepository } from '../domain/repositories/orcamento-repository.interface';
 import { IPagamentoRepository } from '../domain/repositories/pagamento-repository.interface';
 import { IWebhookLogRepository } from '../domain/repositories/webhook-log-repository.interface';
-import { MercadoPagoGateway } from '../application/ports/mercado-pago-gateway';
+import {
+  MercadoPagoGateway,
+  StatusConsultaPagamento,
+} from '../application/ports/mercado-pago-gateway';
 import { SagaPublisher } from '../application/ports/saga-publisher';
 
 // Implementacoes padrao: in-memory + gateway fake (usadas por testes
@@ -23,8 +26,9 @@ export let pagamentoRepo: IPagamentoRepository =
   new InMemoryPagamentoRepository();
 export let webhookLogRepo: IWebhookLogRepository =
   new InMemoryWebhookLogRepository();
-export let mercadoPagoGateway: MercadoPagoGateway =
-  new FakeMercadoPagoGateway();
+
+const fakeMercadoPagoGateway = new FakeMercadoPagoGateway();
+export let mercadoPagoGateway: MercadoPagoGateway = fakeMercadoPagoGateway;
 
 export const sagaPublisher: SagaPublisher = new SnsPublisherService();
 
@@ -48,4 +52,22 @@ export async function resetInMemoryRepositories() {
   await orcamentoRepo.clear();
   await pagamentoRepo.clear();
   await webhookLogRepo.clear();
+}
+
+/**
+ * Seam de teste para a simulacao E2E do Saga (Sprint 5, ver
+ * oficina-app/test/saga-e2e/): forca o proximo status que o
+ * FakeMercadoPagoGateway vai devolver em consultarPagamento(), permitindo
+ * simular "pagamento recusado" via HTTP sem credenciais reais do Mercado
+ * Pago. So tem efeito quando o gateway ativo ainda e o fake (nao foi
+ * substituido por `useRealIntegrations()`); retorna false caso contrario,
+ * para o controller recusar a chamada.
+ */
+export function definirProximoStatusMercadoPagoFake(
+  status: StatusConsultaPagamento,
+  motivoRecusa?: string,
+): boolean {
+  if (mercadoPagoGateway !== fakeMercadoPagoGateway) return false;
+  fakeMercadoPagoGateway.definirProximoStatus(status, motivoRecusa);
+  return true;
 }
