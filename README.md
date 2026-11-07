@@ -137,10 +137,22 @@ Lista completa, com schemas de request/response, no Swagger.
 
 ```bash
 npm test                  # unitarios (Jest)
+npm run test:cov          # cobertura do repositorio inteiro
 npm run test:cov:critical # cobertura de domain/entities + application/use-cases, gate >= 80%
 npm run test:bdd          # BDD (jest-cucumber) - pagamento aprovado + estorno
 npm run test:e2e          # end-to-end (supertest)
 ```
+
+Evidência de cobertura crítica (`test:cov:critical`, `domain/entities` +
+`application/use-cases`): **99% statements / 88% branches / 100%
+functions / 99% lines**.
+
+Evidência de cobertura **do repositório inteiro** (`test:cov`): **95,21%**
+statements / **82,23%** branches / **94,56%** functions / **95,27%**
+lines — acima do mínimo de 80% exigido em qualquer uma das duas métricas.
+Excluídos da medição: `main.ts`, `*.module.ts` e `JwtAuthGuard` (wiring
+puro, sem lógica própria) — mesmo critério usado para delimitar o gate
+crítico acima.
 
 BDD (`test/bdd/pagamento.feature`, 2 cenários): pagamento aprovado
 (orçamento → webhook aprovado → `Pagamento` `APROVADO` +
