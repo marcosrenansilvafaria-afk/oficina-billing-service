@@ -173,6 +173,15 @@ executado a partir do `oficina-app`). O endpoint
 "pagamento recusado" sem credenciais reais do Mercado Pago — fica inerte
 (404) fora desse cenário.
 
+## Qualidade de código (SonarQube)
+
+Scan automático a cada push/PR via [SonarCloud](https://sonarcloud.io)
+(`sonar-project.properties`, projectKey `oficina-billing-service`), com o
+relatório de cobertura do repositório inteiro (`coverage/lcov.info`). O
+job `sonarqube` do CI só executa quando a variável de repositório
+`SONAR_ENABLED=true` estiver definida — sem ela, aparece como
+**skipped**, nunca **failed**.
+
 ## Deploy no EKS
 
 Pipeline em [`.github/workflows/ci-cd-billing-service.yml`](.github/workflows/ci-cd-billing-service.yml),
